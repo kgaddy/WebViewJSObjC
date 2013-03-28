@@ -8,9 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
-@interface webViewController : UIViewController
+@interface webViewController : UIViewController <UIWebViewDelegate>
 {
-     IBOutlet UIWebView *webView;   
+    IBOutlet UIWebView *webView;
+    IBOutlet UILabel *linkLabel;
 }
 @property (nonatomic, retain) UIWebView *webView;
 @end

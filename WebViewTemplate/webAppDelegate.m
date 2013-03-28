@@ -18,7 +18,7 @@
     // Override point for customization after application launch.
     
     // Load HeaderView.xib
-    //[[NSBundle mainBundle] loadNibNamed:@"webView" owner:self options:nil];
+    //webView:shouldStartLoadWithRequest:navigationType:
     
     self.viewController = [[webViewController alloc] initWithNibName:@"webViewController" bundle:nil];
     self.window.rootViewController = self.viewController;
