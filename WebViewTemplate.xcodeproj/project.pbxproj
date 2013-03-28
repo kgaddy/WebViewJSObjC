@@ -19,6 +19,7 @@
 		4B0267AB1702849D007F281D /* webViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B0267AA1702849D007F281D /* webViewController.m */; };
 		4B0267AE1702849D007F281D /* webViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4B0267AC1702849D007F281D /* webViewController.xib */; };
 		4B1D4B2C1704831100C78003 /* www in Resources */ = {isa = PBXBuildFile; fileRef = 4B1D4B2B1704831100C78003 /* www */; };
+		4B1D4B2F1704D51E00C78003 /* JSbridgeHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B1D4B2E1704D51E00C78003 /* JSbridgeHelper.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -39,6 +40,8 @@
 		4B0267AA1702849D007F281D /* webViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = webViewController.m; sourceTree = "<group>"; };
 		4B0267AD1702849D007F281D /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/webViewController.xib; sourceTree = "<group>"; };
 		4B1D4B2B1704831100C78003 /* www */ = {isa = PBXFileReference; lastKnownFileType = folder; path = www; sourceTree = "<group>"; };
+		4B1D4B2D1704D51E00C78003 /* JSbridgeHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSbridgeHelper.h; sourceTree = "<group>"; };
+		4B1D4B2E1704D51E00C78003 /* JSbridgeHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSbridgeHelper.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -92,6 +95,8 @@
 				4B0267AA1702849D007F281D /* webViewController.m */,
 				4B0267AC1702849D007F281D /* webViewController.xib */,
 				4B0267981702849D007F281D /* Supporting Files */,
+				4B1D4B2D1704D51E00C78003 /* JSbridgeHelper.h */,
+				4B1D4B2E1704D51E00C78003 /* JSbridgeHelper.m */,
 			);
 			path = WebViewTemplate;
 			sourceTree = "<group>";
@@ -181,6 +186,7 @@
 				4B02679E1702849D007F281D /* main.m in Sources */,
 				4B0267A21702849D007F281D /* webAppDelegate.m in Sources */,
 				4B0267AB1702849D007F281D /* webViewController.m in Sources */,
+				4B1D4B2F1704D51E00C78003 /* JSbridgeHelper.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

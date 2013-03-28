@@ -7,11 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "JSbridgeHelper.h"
 
 @interface webViewController : UIViewController <UIWebViewDelegate>
 {
     IBOutlet UIWebView *webView;
     IBOutlet UILabel *linkLabel;
 }
+@property (nonatomic,strong) JSbridgeHelper *jsHelper;
 @property (nonatomic, retain) UIWebView *webView;
 @end

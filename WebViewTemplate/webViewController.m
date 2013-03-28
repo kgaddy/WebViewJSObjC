@@ -7,6 +7,7 @@
 //
 
 #import "webViewController.h"
+#import "JSbridgeHelper.h"
 
 @interface webViewController ()
 
@@ -32,6 +33,10 @@
     //stop view from rubber banding
     [[webView scrollView] setBounces: NO];
     
+    self.jsHelper = [[JSbridgeHelper alloc]init];
+    _jsHelper.functionKey = @"js2ios://";
+    _jsHelper.webView = [self webView];
+    
 }
 
 //###################################################################################################
@@ -40,30 +45,15 @@
     
     NSURL *url = [request URL];
     NSString *urlStr = url.absoluteString;
-    
-    return [self processURL:urlStr];
-    
-}
-
--(NSString *)changeLabel :text
-{
-    NSString *resultStr = [NSString stringWithFormat:@"%@ clicked!", text];
-    linkLabel.text = resultStr;
-    return resultStr;
-}
-
-
-- (BOOL) processURL:(NSString *) url
-{
-    NSString *urlStr = [NSString stringWithString:url];
-    
-    NSString *protocolPrefix = @"js2ios://";
-    
-    //process only our custom protocol
-    if ([[urlStr lowercaseString] hasPrefix:protocolPrefix])
+    BOOL loadWindow = YES;
+   
+    if([[self jsHelper] isNativeCall:urlStr])
     {
+        loadWindow=NO;
+
+        
         //strip protocol from the URL. We will get input to call a native method
-        urlStr = [urlStr substringFromIndex:protocolPrefix.length];
+        urlStr = [urlStr substringFromIndex:_jsHelper.functionKey.length];
         
         //Decode the url string
         urlStr = [urlStr stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
@@ -71,10 +61,12 @@
         NSError *jsonError;
         
         //parse JSON input in the URL
+        
         NSDictionary *callInfo = [NSJSONSerialization
                                   JSONObjectWithData:[urlStr dataUsingEncoding:NSUTF8StringEncoding]
                                   options:kNilOptions
                                   error:&jsonError];
+         
         
         //check if there was error in parsing JSON input
         if (jsonError != nil)
@@ -94,15 +86,12 @@
         NSString *successCallback = [callInfo objectForKey:@"success"];
         NSString *errorCallback = [callInfo objectForKey:@"error"];
         NSArray *argsArray = [callInfo objectForKey:@"args"];
-        
+
         [self callNativeFunction:functionName withArgs:argsArray onSuccess:successCallback onError:errorCallback];
         
-        //Do not load this url in the WebView
-        return NO;
-        
     }
+    return loadWindow;
     
-    return YES;
 }
 
 - (void) callNativeFunction:(NSString *) name withArgs:(NSArray *) args onSuccess:(NSString *) successCallback onError:(NSString *) errorCallback
@@ -114,83 +103,29 @@
         {
             
             NSString *result = [self changeLabel:[args objectAtIndex:0]];
-            [self callSuccessCallback:successCallback withRetValue:result forFunction:name];
+            [[self jsHelper] callSuccessCallback:[self webView] :successCallback withRetValue:result forFunction:name];
         }
         else
         {
             NSString *resultStr = [NSString stringWithFormat:@"Error calling function %@. Error : Missing argument", name];
-            [self callErrorCallback:errorCallback withMessage:resultStr];
+            [[self jsHelper] callErrorCallback:[self webView] :errorCallback withMessage:resultStr];
         }
     }
     else
     {
         //Unknown function called from JavaScript
         NSString *resultStr = [NSString stringWithFormat:@"Cannot process function %@. Function not found", name];
-        [self callErrorCallback:errorCallback withMessage:resultStr];
+        [[self jsHelper] callErrorCallback:[self webView] :errorCallback withMessage:resultStr];
         
     }
 }
 
--(void) callErrorCallback:(NSString *) name withMessage:(NSString *) msg
+-(NSString *)changeLabel :text
 {
-    if (name != nil)
-    {
-        //call error handler
-        
-        NSMutableDictionary *resultDict = [[NSMutableDictionary alloc] init];
-        [resultDict setObject:msg forKey:@"error"];
-        [self callJSFunction:name withArgs:resultDict];
-    }
-    else
-    {
-        NSLog(@"%@",msg);
-    }
-    
+    NSString *resultStr = [NSString stringWithFormat:@"%@ clicked!", text];
+    linkLabel.text = resultStr;
+    return resultStr;
 }
-
--(void) callSuccessCallback:(NSString *) name withRetValue:(id) retValue forFunction:(NSString *) funcName
-{
-    if (name != nil)
-    {
-        //call succes handler
-        
-        NSMutableDictionary *resultDict = [[NSMutableDictionary alloc] init];
-        [resultDict setObject:retValue forKey:@"result"];
-        [self callJSFunction:name withArgs:resultDict];
-    }
-    else
-    {
-        NSLog(@"Result of function %@ = %@", funcName,retValue);
-    }
-    
-}
-
--(void) callJSFunction:(NSString *) name withArgs:(NSMutableDictionary *) args
-{
-    NSError *jsonError;
-    
-    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:args options:0 error:&jsonError];
-    
-    if (jsonError != nil)
-    {
-        //call error callback function here
-        NSLog(@"Error creating JSON from the response  : %@",[jsonError localizedDescription]);
-        return;
-    }
-    
-    //initWithBytes:length:encoding
-    NSString *jsonStr = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
-    
-    NSLog(@"jsonStr = %@", jsonStr);
-    
-    if (jsonStr == nil)
-    {
-        NSLog(@"jsonStr is null. count = %d", [args count]);
-    }
-    
-    [webView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"%@('%@');",name,jsonStr]];
-}
-
 
 //###################################################################################################
 //###################################################################################################
