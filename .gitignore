@@ -3,3 +3,5 @@
 /WebViewTemplate.xcodeproj/xcuserdata/kgaddy.xcuserdatad/xcdebugger/Breakpoints.xcbkptlist
 /WebViewTemplate/www/js/.DS_Store
 /WebViewTemplate/www/.DS_Store
+/WebViewTemplate/.DS_Store
+/.gitignore
