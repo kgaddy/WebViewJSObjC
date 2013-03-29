@@ -33,6 +33,8 @@
     //stop view from rubber banding
     [[webView scrollView] setBounces: NO];
     
+    
+    
     self.jsHelper = [[JSbridgeHelper alloc]init];
     _jsHelper.functionKey = @"js2ios://";
     _jsHelper.webView = [self webView];
@@ -60,26 +62,25 @@
 
 - (void) callNativeFunction:(NSString *) name withArgs:(NSArray *) args onSuccess:(NSString *) successCallback onError:(NSString *) errorCallback
 {
-    //We only know how to process sayHello
     if ([name compare:@"changeLabel" options:NSCaseInsensitiveSearch] == NSOrderedSame)
     {
         if (args.count > 0)
         {
             
             NSString *result = [self changeLabel:[args objectAtIndex:0]];
-            [[self jsHelper] callSuccessCallback:[self webView] :successCallback withRetValue:result forFunction:name];
+            [_jsHelper callSuccessCallback:successCallback withRetValue:result forFunction:name];
         }
         else
         {
             NSString *resultStr = [NSString stringWithFormat:@"Error calling function %@. Error : Missing argument", name];
-            [[self jsHelper] callErrorCallback:[self webView] :errorCallback withMessage:resultStr];
+            [_jsHelper callErrorCallback:errorCallback withMessage:resultStr];
         }
     }
     else
     {
         //Unknown function called from JavaScript
         NSString *resultStr = [NSString stringWithFormat:@"Cannot process function %@. Function not found", name];
-        [[self jsHelper] callErrorCallback:[self webView] :errorCallback withMessage:resultStr];
+        [[self jsHelper] callErrorCallback :errorCallback withMessage:resultStr];
         
     }
 }

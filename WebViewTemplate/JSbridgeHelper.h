@@ -12,10 +12,9 @@
 {
     NSURL *requestURL;
     NSString *urlStr;
-    //NSError *jsonError;
     NSDictionary *callInfo;
-
 }
+
 @property NSString *functionKey;
 @property UIWebView *webView;
 @property NSURLRequest *viewRequest;
@@ -25,8 +24,8 @@
 @property NSArray *argsArray;
 
 -(BOOL) isNativeCall:(NSString *) url;
--(void) callJSFunction:(UIWebView *) webView :(NSString *) name withArgs:(NSMutableDictionary *) args;
--(void) callSuccessCallback:(UIWebView *) webView :(NSString *) name withRetValue:(id) retValue forFunction:(NSString *) funcName;
--(void) callErrorCallback:(UIWebView *) webView :(NSString *) name withMessage:(NSString *) msg;
+-(void) callJSFunction:(NSString *) name withArgs:(NSMutableDictionary *) args;
+-(void) callSuccessCallback :(NSString *) name withRetValue:(id) retValue forFunction:(NSString *) funcName;
+-(void) callErrorCallback:(NSString *) name withMessage:(NSString *) msg;
 
 @end

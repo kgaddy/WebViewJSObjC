@@ -61,13 +61,13 @@
 
 -(NSString *)description
 {
-    NSString *descriptionString = [[NSString alloc] initWithFormat:@"function key:%@ Function:%@",[self functionKey], functionName];
+    NSString *descriptionString = [[NSString alloc] initWithFormat:@"Function key:%@ Function:%@ SuccessCallBack:%@",[self functionKey], functionName, successCallback];
     return descriptionString;
 }
 
 
 
- - (void) callJSFunction:(UIWebView *) webView :(NSString *) name withArgs:(NSMutableDictionary *) args
+ - (void) callJSFunction:(NSString *) name withArgs:(NSMutableDictionary *) args
 {
     NSError *jsonError;
     
@@ -93,14 +93,14 @@
 }
 
 
-- (void) callSuccessCallback:(UIWebView *) webView :(NSString *) name withRetValue:(id) retValue forFunction:(NSString *) funcName
+- (void) callSuccessCallback:(NSString *) name withRetValue:(id) retValue forFunction:(NSString *) funcName
 {
     if (name != nil)
     {
         //call success handler
         NSMutableDictionary *resultDict = [[NSMutableDictionary alloc] init];
         [resultDict setObject:retValue forKey:@"result"];
-        [self callJSFunction:[self webView] :name withArgs:resultDict];
+        [self callJSFunction:name withArgs:resultDict];
     }
     else
     {
@@ -108,14 +108,14 @@
     }
     
 }
-- (void) callErrorCallback:(UIWebView *) webView :(NSString *) name withMessage:(NSString *) msg
+- (void) callErrorCallback:(NSString *) name withMessage:(NSString *) msg
 {
     if (name != nil)
     {
         //call error handler
         NSMutableDictionary *resultDict = [[NSMutableDictionary alloc] init];
         [resultDict setObject:msg forKey:@"error"];
-        [self callJSFunction:[self webView] :name withArgs:resultDict];
+        [self callJSFunction:name withArgs:resultDict];
     }
     else
     {

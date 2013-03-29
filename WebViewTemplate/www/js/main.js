@@ -34,29 +34,30 @@ function calliOSFunction(functionName, args, successCallback, errorCallback)
 }
 
 
+
+//callback from obj-c
+var onSuccess = function(ret)
+{
+    var obj = JSON.parse(ret);
+    $("#result").html(obj.result);
+}
+
+function onError (ret)
+{
+    if (ret)
+    {
+        var obj = JSON.parse(ret);
+        $("#result").html(obj.result);
+    }
+}
+
+
+
 $(document).ready(function() {
    // do stuff when DOM is ready
    
    $(".native-link").click(function(e){
 	   var txt = $(e.currentTarget).attr('id');
 	   calliOSFunction("changeLabel", [txt], "onSuccess", "onError");
-
-	   function onSuccess (ret)
-	   {
-	       if (ret)
-	       {
-	           var obj = JSON.parse(ret);
-	           document.write(obj.result);
-	       }
-	   }
-
-	   function onError (ret)
-	   {
-	       if (ret)
-	       {
-	           var obj = JSON.parse(ret);
-	           document.write(obj.error);
-	       }
-	   }
-   });
+    });
  });
