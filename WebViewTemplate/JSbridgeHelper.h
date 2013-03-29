@@ -9,8 +9,20 @@
 #import <Foundation/Foundation.h>
 
 @interface JSbridgeHelper : NSObject
+{
+    NSURL *requestURL;
+    NSString *urlStr;
+    //NSError *jsonError;
+    NSDictionary *callInfo;
+
+}
 @property NSString *functionKey;
 @property UIWebView *webView;
+@property NSURLRequest *viewRequest;
+@property NSString *functionName;
+@property  NSString *successCallback;
+@property NSString *errorCallback;
+@property NSArray *argsArray;
 
 -(BOOL) isNativeCall:(NSString *) url;
 -(void) callJSFunction:(UIWebView *) webView :(NSString *) name withArgs:(NSMutableDictionary *) args;

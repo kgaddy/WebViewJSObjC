@@ -9,14 +9,62 @@
 #import "JSbridgeHelper.h"
 
 @implementation JSbridgeHelper
+
 @synthesize functionKey;
 @synthesize webView;
--(id)init
+@synthesize viewRequest = _viewRequest;
+@synthesize successCallback;
+@synthesize errorCallback;
+@synthesize functionName;
+@synthesize argsArray;
+
+-(NSURLRequest *)viewRequest
 {
-    self = [super init];
-    
-    return self;
+    return _viewRequest;
 }
+
+
+-(void)setViewRequest:(NSURLRequest *)request
+{
+    _viewRequest = request;
+    requestURL = [_viewRequest URL];
+    urlStr =  requestURL.absoluteString;
+    
+    
+    //strip protocol from the URL. We will get input to call a native method
+    urlStr = [urlStr substringFromIndex:functionKey.length];
+    
+    //Decode the url string
+    urlStr = [urlStr stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    
+    
+    //requestProtocol = [urlStr substringFromIndex:functionKey.length];
+    
+    NSError *jsonError;
+    //parse JSON input in the URL
+    
+    callInfo = [NSJSONSerialization
+                              JSONObjectWithData:[urlStr dataUsingEncoding:NSUTF8StringEncoding]
+                              options:kNilOptions
+                              error:&jsonError];
+    
+   
+    functionName = [callInfo objectForKey:@"functionname"];
+    successCallback = [callInfo objectForKey:@"success"];
+    errorCallback = [callInfo objectForKey:@"error"];
+    argsArray = [callInfo objectForKey:@"args"];
+
+    NSLog(@"--%@---", functionName);
+
+}
+
+
+-(NSString *)description
+{
+    NSString *descriptionString = [[NSString alloc] initWithFormat:@"function key:%@ Function:%@",[self functionKey], functionName];
+    return descriptionString;
+}
+
 
 
  - (void) callJSFunction:(UIWebView *) webView :(NSString *) name withArgs:(NSMutableDictionary *) args
@@ -79,18 +127,13 @@
 
 - (BOOL) isNativeCall:(NSString *) url
 {
-    NSString *urlStr = [NSString stringWithString:url];
-    
-    NSString *protocolPrefix = @"js2ios://";
-    
+    NSString *urlStra = [NSString stringWithString:url];
     //process only our custom protocol
-    if (![[urlStr lowercaseString] hasPrefix:protocolPrefix])
+    if (![[urlStra lowercaseString] hasPrefix:functionKey])
     {
         //Do not load this url in the WebView
         return NO;
-        
     }
-    
     return YES;
 }
 
